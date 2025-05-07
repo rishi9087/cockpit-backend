@@ -2,9 +2,9 @@
 const mongoose = require('mongoose');
 
 const questionSchema = new mongoose.Schema({
-  questionId:{
+questionId:{
     type: String,
-    unique: true,
+    // unique: true,
 },     
 question:{
     type: String
