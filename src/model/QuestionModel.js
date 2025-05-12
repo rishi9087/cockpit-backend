@@ -10,11 +10,11 @@ question:{
     type: String
 },
 options: [
-    {
-      id: Number,
-      text: String,
-      isCorrect: Boolean
-    }
+  {
+    id: { type: Number},
+    text: { type: String},
+    isCorrect: { type: Boolean }
+  }
 ],
 
   explanation:{

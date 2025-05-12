@@ -1,13 +1,15 @@
 const express = require('express');
 const User =  require("../model/UserModel")
 const bcrypt= require('bcrypt');
+const jwt = require('jsonwebtoken');
+const JWT_SECRET = process.env.JWT_SECRET_KEY || "token123";
 
 const CreateUser = async (req , res ) => {
     try {
         const {email,username,password} =  req.body;
 
         const userExist = await User.findOne({email: email});
-        
+
         if(userExist){
             return res.json({ 
                 status: 400,
@@ -47,11 +49,14 @@ const LoginUser = async (req , res ) => {
         }
 
         const pwdcompare = await bcrypt.compare(password, userExist.password);
+        const jwtToken = jwt.sign( { id: userExist._id },  JWT_SECRET, { expiresIn: "10d" } );
+
         if (pwdcompare) {
             res.json({
                     status: 200,
                     message: "Login successfull",
-                    data: userExist
+                    data: userExist,
+                    token: jwtToken
                 });
         }
         else {
