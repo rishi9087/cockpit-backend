@@ -2,6 +2,17 @@
 const mongoose = require('mongoose');
 
 const questionSchema = new mongoose.Schema({
+  
+syllabus:{
+  type: String
+},
+book:{
+  type: String
+},
+chapter:{
+  type: String
+},
+
 questionId:{
     type: String,
     // unique: true,

@@ -1,17 +1,21 @@
 const express = require('express');
 const Question = require("../model/QuestionModel")
 const Syllabus = require("../model/SyllabusModel")
+const Chapter = require("../model/ChapterModel")
 
 
 const uploadQuestions = async (req, res) => {
     try {
-        const { questionId, question, options, explanation } = req.body;
+        const {syllabus,book,chapter, questionId, question, options, explanation } = req.body;
 
         if (!question || !options) {
             return res.json({ status: 400, message: "Invalid question format" });
         }
 
         const newQuestion = await Question.create({
+            syllabus,
+            book,
+            chapter,
             questionId,
             question,
             options,
@@ -131,4 +135,30 @@ const getSyllabus = async (req, res) => {
     }
 }
 
-module.exports = { getQuestions, uploadQuestions, uploadQuestionsBulk, addSyllabus, getSyllabus };
+const addChapters = async (req, res) => {
+    try {
+        const { syllabus,book,chapterno, chaptername, status } = req.body;
+
+        const newChapter = await Chapter.create({
+          syllabus,
+          book,
+          chapterno,
+          chaptername,
+          status
+        })
+
+        res.json({
+            status: 200,
+            message: "Chapter added successfully",
+            data: newChapter
+        });
+
+    } catch (err) {
+        res.json({
+            status: 400,
+            message: "Internal server error"
+        })
+    }
+}
+
+module.exports = {getQuestions, uploadQuestions, uploadQuestionsBulk, addSyllabus, getSyllabus, addChapters };

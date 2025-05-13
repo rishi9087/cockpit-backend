@@ -6,6 +6,11 @@ const questionRoutes = require("./src/Routes/questionsRoute")
 const syllabusRoutes = require("./src/Routes/syllabusRoute")
 const mongoose = require('mongoose');
 const User =  require("./src/model/UserModel")
+const cors = require('cors');
+
+app.use(cors({
+  origin: 'http://localhost:3000',
+}));
 
 const dbConnection =  async() => {
   await  mongoose.connect('mongodb://127.0.0.1:27017/cockpit');
