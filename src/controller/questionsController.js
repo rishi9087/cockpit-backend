@@ -2,11 +2,11 @@ const express = require('express');
 const Question = require("../model/QuestionModel")
 const Syllabus = require("../model/SyllabusModel")
 const Chapter = require("../model/ChapterModel")
-
+const Book = require("../model/BookModel")
 
 const uploadQuestions = async (req, res) => {
     try {
-        const {syllabus,book,chapter, questionId, question, options, explanation } = req.body;
+        const { syllabus, book, chapter, questionId, question, options, explanation } = req.body;
 
         if (!question || !options) {
             return res.json({ status: 400, message: "Invalid question format" });
@@ -39,7 +39,7 @@ const uploadQuestionsBulk = async (req, res) => {
     try {
         const jsonString = req.file.buffer.toString('utf8'); // convert raw binary to string
         const parsedData = JSON.parse(jsonString);  //converts json string to json object
-
+        const { syllabus, book, chapter } = req.body;
 
         if (!Array.isArray(parsedData)) {
             return res.json({
@@ -48,7 +48,15 @@ const uploadQuestionsBulk = async (req, res) => {
             });
         }
 
-        const bulkOps = parsedData.map((q) => ({
+        const questions = parsedData.map(q => ({
+            ...q,
+            syllabus,
+            book,
+            chapter
+        }));
+
+
+        const bulkOps = questions.map((q) => ({
             insertOne: {
                 document: q // Directly insert each question as a new document
             }
@@ -137,14 +145,14 @@ const getSyllabus = async (req, res) => {
 
 const addChapters = async (req, res) => {
     try {
-        const { syllabus,book,chapterno, chaptername, status } = req.body;
+        const { syllabus, book, chapterno, chaptername, status } = req.body;
 
         const newChapter = await Chapter.create({
-          syllabus,
-          book,
-          chapterno,
-          chaptername,
-          status
+            syllabus,
+            book,
+            chapterno,
+            chaptername,
+            status
         })
 
         res.json({
@@ -161,4 +169,26 @@ const addChapters = async (req, res) => {
     }
 }
 
-module.exports = {getQuestions, uploadQuestions, uploadQuestionsBulk, addSyllabus, getSyllabus, addChapters };
+const addBooks = async (req, res) => {
+    try {
+        const { bookTitle } = req.body;
+
+        const newBook = await Book.create({
+            bookTitle
+        })
+
+        res.json({
+            status: 200,
+            message: "Book added successfully",
+            data: newBook
+        });
+
+    } catch (err) {
+        res.json({
+            status: 400,
+            message: "Internal server error"
+        })
+    }
+}
+
+module.exports = { getQuestions, uploadQuestions, uploadQuestionsBulk, addSyllabus, getSyllabus, addChapters, addBooks };

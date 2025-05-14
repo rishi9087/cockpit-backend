@@ -28,7 +28,7 @@ const CreateUser = async (req , res ) => {
         res.json({
             status : 200,
             message: "New User Created",
-            data : newUser        
+            userData : newUser        
         })
     } catch (error) {
         console.log(error)
@@ -55,7 +55,7 @@ const LoginUser = async (req , res ) => {
             res.json({
                     status: 200,
                     message: "Login successfull",
-                    data: userExist,
+                    userData: userExist,
                     token: jwtToken
                 });
         }
